@@ -79,7 +79,7 @@ class JianDan(object):
         print '踩的数量', len(r)
         return r
 
-    def get_content(self, soup):
+    def get_contents(self, soup):
         """
         获取所有段子内容
         """
@@ -89,6 +89,22 @@ class JianDan(object):
             t = i.string
             r.append(t)
         print '段子的数量', len(r), r[0]
+        return r
+
+    def get_good_contents(self, content, authors, likes, unlikes, n=20):
+        """
+        获取优质内容. 喜欢 - 不喜欢 = n.
+        """
+        r = []
+        n = len(authors)
+        for i in range(25):
+            like = likes[i]
+            unlike = unlikes[i]
+            score = int(like) - int(unlike)
+            if score < n:
+                continue
+            r.append(i)
+            print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
         return r
 
     def get_soup(self, html, parser_type="html.parser"):
@@ -110,27 +126,8 @@ if __name__ == '__main__':
     authors = jd.get_authors(soup)
     likes = jd.get_likes(soup)
     unlikes = jd.get_unlikes(soup)
-    content = jd.get_content(soup)
+    contents = jd.get_contents(soup)
 
-    n = len(authors)
-    for i in range(25):
-        like = likes[i]
-        unlike = unlikes[i]
-        score = int(like) - int(unlike)
-        if score < 20:
-            continue
-        print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
-
-    # rows = soup.select(".row")
-    # print len(rows)
-    # for i in rows:
-    #     t = i.select(".tucao-like-container > span")
-    #     like = t[0]
-    #     print like
-    #     # name = jd.find_author(i)
-    #     # print name
-
-    # 计算赞比踩多20以上的 row
-    # likes = soup.select(".tucao-like-container > span")
-    # for i in likes:
-    #     print i.string
+    f = jd.get_good_contents
+    good_content = f(contents, authors, likes, unlikes)
+    print good_content
