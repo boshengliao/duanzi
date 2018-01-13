@@ -22,6 +22,18 @@ print r
 content = r.content
 # print 'content', content
 
+
+def find_author(element):
+    """
+    找到该行的作者
+    """
+    i = element
+    t = i.select(".author > strong")
+    v = t[0]
+    name = v.string
+    return name
+
+
 soup = bs4.BeautifulSoup(content, "html.parser")
 rows = soup.select(".row")
 print type(soup), type(rows)
@@ -30,6 +42,7 @@ for i in rows:
     v = t[0]
     name = v.string
     print name
+
 
 """
 # 找到所有段子
