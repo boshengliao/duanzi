@@ -155,22 +155,30 @@ class JianDan(object):
         filename = '{}-{}.xls'.format(sheet_name, now)
         exists = os.path.exists(filename)
         if exists:
-            print '文件已存在'
-            old = self.xlrd.open_workbook(filename)
-            row = old.sheets()[0].nrows
-            """
-            # 不知道为什么此处的 copy 通过 self 调用会出错
-            new = self.copy(old)
-            TypeError: copy() takes exactly 1 argument (2 given)
-            """
-            new = copy(old)
-            sh = new.get_sheet(0)
-            f = self._sheet_write
-            f(sh, row, row, good_contents, contents, authors, likes)
-            new.save(filename)
+            f = self.write_from_old
+            f(good_contents, contents, authors, likes, filename)
         else:
             f = self.create_new
             f(good_contents, contents, authors, likes, filename, sheet_name)
+        return None
+
+    def write_from_old(self, good_contents, contents,
+                       authors, likes, filename):
+        """
+        从已存在的 excel 追加内容
+        """
+        old = self.xlrd.open_workbook(filename)
+        row = old.sheets()[0].nrows
+        """
+        # 不知道为什么此处的 copy 通过 self 调用会出错
+        new = self.copy(old)
+        TypeError: copy() takes exactly 1 argument (2 given)
+        """
+        new = copy(old)
+        sh = new.get_sheet(0)
+        f = self._sheet_write
+        f(sh, row, row, good_contents, contents, authors, likes)
+        new.save(filename)
         return None
 
     def create_new(self, good_contents, contents, authors,
