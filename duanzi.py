@@ -38,6 +38,17 @@ class JianDan(object):
     xlrd = xlrd
     copy = copy
 
+    def get_today_news(self, max_page=5):
+        """
+        从今天的最新一页开始写入数据
+        """
+        current = self.get_current_page()
+        for i in range(0, max_page):
+            self.get_single_page_contents(current)
+            current -= 1
+            time.sleep(5)
+        return
+
     def get_html(self, url):
         """
         获取 html
@@ -225,17 +236,6 @@ class JianDan(object):
             tmp_num += 1
             row += 1
         return None
-
-    def get_today_news(self, max_page=5):
-        """
-        从今天的最新一页开始写入数据
-        """
-        current = self.get_current_page()
-        for i in range(0, max_page):
-            self.get_single_page_contents(current)
-            current -= 1
-            time.sleep(5)
-        return
 
     def get_soup(self, html, parser_type="html.parser"):
         """
