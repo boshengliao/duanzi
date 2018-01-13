@@ -64,7 +64,7 @@ class JianDan(object):
         for i in elements:
             t = i.string
             r.append(t)
-        print '赞的数量', len(r),
+        print '赞的数量', len(r)
         return r
 
     def get_unlikes(self, soup):
@@ -76,7 +76,19 @@ class JianDan(object):
         for i in elements:
             t = i.string
             r.append(t)
-        print '踩的数量', len(r),
+        print '踩的数量', len(r)
+        return r
+
+    def get_content(self, soup):
+        """
+        获取所有段子内容
+        """
+        r = []
+        elements = soup.select(".text > p")
+        for i in elements:
+            t = i.string
+            r.append(t)
+        print '段子的数量', len(r), r[0]
         return r
 
     def get_soup(self, html, parser_type="html.parser"):
@@ -95,9 +107,19 @@ if __name__ == '__main__':
     html = jd.get_html(url)
     soup = jd.get_soup(html)
 
-    r = jd.get_authors(soup)
-    r = jd.get_likes(soup)
-    r = jd.get_unlikes(soup)
+    authors = jd.get_authors(soup)
+    likes = jd.get_likes(soup)
+    unlikes = jd.get_unlikes(soup)
+    content = jd.get_content(soup)
+
+    n = len(authors)
+    for i in range(25):
+        like = likes[i]
+        unlike = unlikes[i]
+        score = int(like) - int(unlike)
+        if score < 20:
+            continue
+        print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
 
     # rows = soup.select(".row")
     # print len(rows)
