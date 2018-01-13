@@ -165,7 +165,8 @@ class JianDan(object):
             """
             new = copy(old)
             sh = new.get_sheet(0)
-            sh.write(row, 0, 13)
+            f = self._sheet_write
+            f(sh, row, row, good_contents, contents, authors, likes)
             new.save(filename)
         else:
             f = self.create_new
