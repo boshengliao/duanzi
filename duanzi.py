@@ -49,6 +49,34 @@ class JianDan(object):
             time.sleep(5)
         return
 
+    def get_single_page_contents(self, page):
+        """
+        获取一页的段子
+        """
+        url = self.page_url.format(page)
+        html = self.get_html(url)
+        soup = self.get_soup(html)
+
+        authors = self.get_authors(soup)
+        likes = self.get_likes(soup)
+        unlikes = self.get_unlikes(soup)
+        contents = self.get_contents(soup)
+
+        f = self.get_good_contents
+        good_contents = f(contents, authors, likes, unlikes)
+
+        sheet_name = '煎蛋网段子'
+        now = datetime.datetime.now().strftime('%Y%m%d')
+        filename = '{}-{}.xls'.format(sheet_name, now)
+        exists = os.path.exists(filename)
+        if exists:
+            f = self.write_from_old
+            f(good_contents, contents, authors, likes, filename)
+        else:
+            f = self.create_new
+            f(good_contents, contents, authors, likes, filename, sheet_name)
+        return None
+
     def get_html(self, url):
         """
         获取 html
@@ -59,16 +87,6 @@ class JianDan(object):
         print r
         content = r.content
         return content
-
-    def find_author(self, row):
-        """
-        找到该行的作者
-        """
-        i = row
-        t = i.select(".author > strong")
-        v = t[0]
-        name = v.string
-        return name
 
     def get_authors(self, soup):
         """
@@ -146,34 +164,6 @@ class JianDan(object):
         t = txt[1:-1]
         current_page = int(t)
         return current_page
-
-    def get_single_page_contents(self, page):
-        """
-        获取一页的段子
-        """
-        url = self.page_url.format(page)
-        html = self.get_html(url)
-        soup = self.get_soup(html)
-
-        authors = self.get_authors(soup)
-        likes = self.get_likes(soup)
-        unlikes = self.get_unlikes(soup)
-        contents = self.get_contents(soup)
-
-        f = self.get_good_contents
-        good_contents = f(contents, authors, likes, unlikes)
-
-        sheet_name = '煎蛋网段子'
-        now = datetime.datetime.now().strftime('%Y%m%d')
-        filename = '{}-{}.xls'.format(sheet_name, now)
-        exists = os.path.exists(filename)
-        if exists:
-            f = self.write_from_old
-            f(good_contents, contents, authors, likes, filename)
-        else:
-            f = self.create_new
-            f(good_contents, contents, authors, likes, filename, sheet_name)
-        return None
 
     def write_from_old(self, good_contents, contents,
                        authors, likes, filename):
