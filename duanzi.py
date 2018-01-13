@@ -3,8 +3,14 @@
 
 from __future__ import unicode_literals
 
+import datetime
+
 import bs4
+import os
 import requests
+import xlwt
+import xlrd
+import xlutils
 
 
 class JianDan(object):
@@ -25,6 +31,11 @@ class JianDan(object):
     headers = {
         'User-Agent': agent,
     }
+
+    # 工具
+    xlwt = xlwt
+    xlrd = xlrd
+    xlutils = xlutils
 
     def get_html(self, url):
         """
@@ -138,7 +149,36 @@ class JianDan(object):
         contents = self.get_contents(soup)
 
         f = self.get_good_contents
-        good_content = f(contents, authors, likes, unlikes)
+        good_contents = f(contents, authors, likes, unlikes)
+
+        # 写入 excel
+        wb = self.xlwt.Workbook()
+        sheet_name = '煎蛋网段子'
+        sh = wb.add_sheet(sheet_name)
+        row = 0
+        # 初始化第一行
+        titles = ['序号', '内容', '发布者', '赞']
+        tmp_num = 0
+        for i in titles:
+            sh.write(row, tmp_num, i)
+            tmp_num += 1
+        # 写入实际内容
+        row += 1
+        tmp_num = 1
+        for i in good_contents:
+            author = authors[i]
+            like = likes[i]
+            content = contents[i]
+            sh.write(row, 0, tmp_num)
+            sh.write(row, 1, content)
+            sh.write(row, 2, author)
+            sh.write(row, 3, like)
+            tmp_num += 1
+            row += 1
+
+        now = datetime.datetime.now().strftime('%Y%m%d')
+        filename = '{}-{}.xls'.format(sheet_name, now)
+        wb.save(filename)
         return None
 
     def get_soup(self, html, parser_type="html.parser"):
