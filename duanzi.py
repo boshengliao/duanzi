@@ -151,9 +151,24 @@ class JianDan(object):
         f = self.get_good_contents
         good_contents = f(contents, authors, likes, unlikes)
 
+        sheet_name = '煎蛋网段子'
+        now = datetime.datetime.now().strftime('%Y%m%d')
+        filename = '{}-{}.xls'.format(sheet_name, now)
+        exists = os.path.exists(filename)
+        if exists:
+            print '文件已存在'
+        else:
+            f = self.create_new
+            f(good_contents, contents, authors, likes, filename, sheet_name)
+        return None
+
+    def create_new(self, good_contents, contents, authors,
+                   likes, filename, sheet_name):
+        """
+        生成新的 excel
+        """
         # 写入 excel
         wb = self.xlwt.Workbook()
-        sheet_name = '煎蛋网段子'
         sh = wb.add_sheet(sheet_name)
         row = 0
         # 初始化第一行
@@ -175,9 +190,7 @@ class JianDan(object):
             sh.write(row, 3, like)
             tmp_num += 1
             row += 1
-
-        now = datetime.datetime.now().strftime('%Y%m%d')
-        filename = '{}-{}.xls'.format(sheet_name, now)
+        # 保存
         wb.save(filename)
         return None
 
