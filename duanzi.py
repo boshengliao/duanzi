@@ -190,6 +190,19 @@ class JianDan(object):
         # 写入实际内容
         row += 1
         tmp_num = 1
+        f = self._sheet_write
+        f(sh, row, tmp_num, good_contents, contents, authors, likes)
+        # 保存
+        wb.save(filename)
+        return None
+
+    def _sheet_write(self, sheet, row, num, good_contents,
+                     contents, authors, likes):
+        """
+        在 sheet 内写入数据
+        """
+        sh = sheet
+        tmp_num = num
         for i in good_contents:
             author = authors[i]
             like = likes[i]
@@ -200,8 +213,6 @@ class JianDan(object):
             sh.write(row, 3, like)
             tmp_num += 1
             row += 1
-        # 保存
-        wb.save(filename)
         return None
 
     def get_soup(self, html, parser_type="html.parser"):
