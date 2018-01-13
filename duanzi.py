@@ -10,8 +10,7 @@ import os
 import requests
 import xlwt
 import xlrd
-import xlutils
-
+from xlutils.copy import copy
 
 class JianDan(object):
     """
@@ -35,7 +34,7 @@ class JianDan(object):
     # 工具
     xlwt = xlwt
     xlrd = xlrd
-    xlutils = xlutils
+    copy = copy
 
     def get_html(self, url):
         """
@@ -120,7 +119,7 @@ class JianDan(object):
             if score < base_score:
                 continue
             r.append(i)
-            print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
+            # print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
         return r
 
     def get_current_page(self):
@@ -157,6 +156,17 @@ class JianDan(object):
         exists = os.path.exists(filename)
         if exists:
             print '文件已存在'
+            old = self.xlrd.open_workbook(filename)
+            row = old.sheets()[0].nrows
+            """
+            # 不知道为什么此处的 copy 通过 self 调用会出错
+            new = self.copy(old)
+            TypeError: copy() takes exactly 1 argument (2 given)
+            """
+            new = copy(old)
+            sh = new.get_sheet(0)
+            sh.write(row, 0, 13)
+            new.save(filename)
         else:
             f = self.create_new
             f(good_contents, contents, authors, likes, filename, sheet_name)
