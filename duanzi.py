@@ -23,7 +23,9 @@ class JianDan(object):
     }
 
     def get_html(self, url):
-
+        """
+        获取 html
+        """
         headers = self.headers
         f = self.requests.get
         r = f(url, headers=headers)
