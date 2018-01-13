@@ -14,6 +14,10 @@ class JianDan(object):
     bs4 = bs4
     requests = requests
 
+    duanzi_index = 'http://jandan.net/duan'
+
+    page_url = 'http://jandan.net/duan/page-{}#comments'
+
     url = 'http://jandan.net/duan/page-303#comments'
     agent = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 ("
              "KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36")
@@ -92,7 +96,7 @@ class JianDan(object):
         return r
 
     def get_good_contents(self, content, authors, likes,
-                          unlikes, base_score=100):
+                          unlikes, base_score=20):
         """
         获取优质内容. 喜欢 - 不喜欢 = n.
         """
@@ -108,6 +112,35 @@ class JianDan(object):
             print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
         return r
 
+    def get_current_page(self):
+        """
+        获取当前页码
+        """
+        html = self.get_html(self.duanzi_index)
+        soup = self.get_soup(html)
+        t = soup.select('.current-comment-page')
+        txt = t[0].string
+        t = txt[1:-1]
+        current_page = int(t)
+        return current_page
+
+    def get_single_page_contents(self, page):
+        """
+        获取一页的段子
+        """
+        url = self.page_url.format(page)
+        html = self.get_html(url)
+        soup = self.get_soup(html)
+
+        authors = self.get_authors(soup)
+        likes = self.get_likes(soup)
+        unlikes = self.get_unlikes(soup)
+        contents = self.get_contents(soup)
+
+        f = self.get_good_contents
+        good_content = f(contents, authors, likes, unlikes)
+        return None
+
     def get_soup(self, html, parser_type="html.parser"):
         """
         获取 soup
@@ -120,15 +153,27 @@ class JianDan(object):
 
 if __name__ == '__main__':
     jd = JianDan()
-    url = jd.url
-    html = jd.get_html(url)
-    soup = jd.get_soup(html)
+    # url = jd.url
+    # html = jd.get_html(url)
+    # soup = jd.get_soup(html)
 
-    authors = jd.get_authors(soup)
-    likes = jd.get_likes(soup)
-    unlikes = jd.get_unlikes(soup)
-    contents = jd.get_contents(soup)
+    # authors = jd.get_authors(soup)
+    # likes = jd.get_likes(soup)
+    # unlikes = jd.get_unlikes(soup)
+    # contents = jd.get_contents(soup)
 
-    f = jd.get_good_contents
-    good_content = f(contents, authors, likes, unlikes)
-    print good_content
+    # f = jd.get_good_contents
+    # good_content = f(contents, authors, likes, unlikes)
+    # print good_content
+
+    # url = 'http://jandan.net/duan'
+    # html = jd.get_html(url)
+    # soup = jd.get_soup(html)
+    # t = soup.select('.current-comment-page')
+    # current_page = t[0].string
+    # print current_page[1:-1]
+
+    # r = jd.get_current_page()
+    # print r
+
+    r = jd.get_single_page_contents(307)
