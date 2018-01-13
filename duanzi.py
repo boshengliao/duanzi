@@ -88,20 +88,21 @@ class JianDan(object):
         for i in elements:
             t = i.string
             r.append(t)
-        print '段子的数量', len(r), r[0]
+        print '段子的数量', len(r)
         return r
 
-    def get_good_contents(self, content, authors, likes, unlikes, n=20):
+    def get_good_contents(self, content, authors, likes,
+                          unlikes, base_score=100):
         """
         获取优质内容. 喜欢 - 不喜欢 = n.
         """
         r = []
         n = len(authors)
-        for i in range(25):
+        for i in range(n):
             like = likes[i]
             unlike = unlikes[i]
             score = int(like) - int(unlike)
-            if score < n:
+            if score < base_score:
                 continue
             r.append(i)
             print '作者: {}\n内容: {}\n'.format(authors[i], content[i])
