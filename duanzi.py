@@ -48,11 +48,7 @@ class JianDan(object):
         content = html
         f = self.bs4.BeautifulSoup
         soup = f(content, parser_type)
-        rows = soup.select(".row")
-        for i in rows:
-            name = self.find_author(i)
-            print name
-        return None
+        return soup
 
 
 if __name__ == '__main__':
@@ -60,3 +56,8 @@ if __name__ == '__main__':
     url = jd.url
     html = jd.get_html(url)
     soup = jd.get_soup(html)
+
+    rows = soup.select(".row")
+    for i in rows:
+        name = jd.find_author(i)
+        print name
