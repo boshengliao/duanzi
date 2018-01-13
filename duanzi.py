@@ -31,11 +31,11 @@ class JianDan(object):
         content = r.content
         return content
 
-    def find_author(self, element):
+    def find_author(self, row):
         """
         找到该行的作者
         """
-        i = element
+        i = row
         t = i.select(".author > strong")
         v = t[0]
         name = v.string
