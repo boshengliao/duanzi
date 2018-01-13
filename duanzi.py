@@ -43,6 +43,18 @@ class JianDan(object):
         name = v.string
         return name
 
+    def get_authors(self, soup):
+        """
+        获取所有作者
+        """
+        r = []
+        elements = soup.select(".author > strong")
+        for i in elements:
+            t = i.string
+            r.append(t)
+        print '作者数量', len(r)
+        return r
+
     def get_soup(self, html, parser_type="html.parser"):
         """
         获取 soup
@@ -59,7 +71,18 @@ if __name__ == '__main__':
     html = jd.get_html(url)
     soup = jd.get_soup(html)
 
-    rows = soup.select(".row")
-    for i in rows:
-        name = jd.find_author(i)
-        print name
+    r = jd.get_authors(soup)
+
+    # rows = soup.select(".row")
+    # print len(rows)
+    # for i in rows:
+    #     t = i.select(".tucao-like-container > span")
+    #     like = t[0]
+    #     print like
+    #     # name = jd.find_author(i)
+    #     # print name
+
+    # 计算赞比踩多20以上的 row
+    # likes = soup.select(".tucao-like-container > span")
+    # for i in likes:
+    #     print i.string
