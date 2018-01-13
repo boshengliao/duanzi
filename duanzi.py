@@ -8,6 +8,7 @@ import datetime
 import bs4
 import os
 import requests
+import time
 import xlwt
 import xlrd
 from xlutils.copy import copy
@@ -224,6 +225,17 @@ class JianDan(object):
             row += 1
         return None
 
+    def get_today_news(self, max_page=5):
+        """
+        从今天的最新一页开始写入数据
+        """
+        current = self.get_current_page()
+        for i in range(0, max_page):
+            self.get_single_page_contents(current)
+            current -= 1
+            time.sleep(5)
+        return
+
     def get_soup(self, html, parser_type="html.parser"):
         """
         获取 soup
@@ -236,27 +248,4 @@ class JianDan(object):
 
 if __name__ == '__main__':
     jd = JianDan()
-    # url = jd.url
-    # html = jd.get_html(url)
-    # soup = jd.get_soup(html)
-
-    # authors = jd.get_authors(soup)
-    # likes = jd.get_likes(soup)
-    # unlikes = jd.get_unlikes(soup)
-    # contents = jd.get_contents(soup)
-
-    # f = jd.get_good_contents
-    # good_content = f(contents, authors, likes, unlikes)
-    # print good_content
-
-    # url = 'http://jandan.net/duan'
-    # html = jd.get_html(url)
-    # soup = jd.get_soup(html)
-    # t = soup.select('.current-comment-page')
-    # current_page = t[0].string
-    # print current_page[1:-1]
-
-    # r = jd.get_current_page()
-    # print r
-
-    r = jd.get_single_page_contents(307)
+    f = jd.get_today_news()
