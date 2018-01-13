@@ -67,6 +67,18 @@ class JianDan(object):
         print '赞的数量', len(r),
         return r
 
+    def get_unlikes(self, soup):
+        """
+        获取所有踩
+        """
+        r = []
+        elements = soup.select(".tucao-unlike-container > span")
+        for i in elements:
+            t = i.string
+            r.append(t)
+        print '踩的数量', len(r),
+        return r
+
     def get_soup(self, html, parser_type="html.parser"):
         """
         获取 soup
@@ -85,6 +97,7 @@ if __name__ == '__main__':
 
     r = jd.get_authors(soup)
     r = jd.get_likes(soup)
+    r = jd.get_unlikes(soup)
 
     # rows = soup.select(".row")
     # print len(rows)
