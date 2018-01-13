@@ -55,6 +55,18 @@ class JianDan(object):
         print '作者数量', len(r)
         return r
 
+    def get_likes(self, soup):
+        """
+        获取所有赞
+        """
+        r = []
+        elements = soup.select(".tucao-like-container > span")
+        for i in elements:
+            t = i.string
+            r.append(t)
+        print '赞的数量', len(r),
+        return r
+
     def get_soup(self, html, parser_type="html.parser"):
         """
         获取 soup
@@ -72,6 +84,7 @@ if __name__ == '__main__':
     soup = jd.get_soup(html)
 
     r = jd.get_authors(soup)
+    r = jd.get_likes(soup)
 
     # rows = soup.select(".row")
     # print len(rows)
